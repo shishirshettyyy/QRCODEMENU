@@ -1,0 +1,519 @@
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Playfair Display', serif;
+  background-color: #fafafa;
+  color: #2d2d2d;
+  line-height: 1.8;
+}
+
+/* Main container */
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(to bottom, #ffffff 0%, #f7f1e3 100%);
+}
+
+/* Header */
+.header {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.header h1 {
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  letter-spacing: 0.5px;
+}
+
+.subtitle {
+  font-size: 1.3rem;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300;
+  color: #666;
+  margin-top: 10px;
+}
+
+/* Main content */
+.main-content {
+  flex: 1;
+  width: 100%;
+  padding: 0 20px;
+}
+
+.qr-centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 200px); /* Adjust for header/footer height */
+}
+
+/* QR Code section */
+.qrcode-wrapper {
+  background: #fff;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  max-width: 450px;
+  width: 100%;
+}
+
+.qrcode-title {
+  font-size: 1.6rem;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  color: #34495e;
+  margin-bottom: 25px;
+}
+
+.qrcode {
+  display: block;
+  max-width: 250px;
+  height: auto;
+  margin: 0 auto 20px;
+  border: 3px solid #d4a373;
+  border-radius: 12px;
+  transition: transform 0.3s ease;
+}
+
+.qrcode:hover {
+  transform: scale(1.1);
+}
+
+.qrcode-instruction {
+  font-size: 1.1rem;
+  font-family: 'Roboto', sans-serif;
+  color: #7f8c8d;
+}
+
+/* Menu section */
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px 0;
+}
+
+.menu-item {
+  background: #fff;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.menu-item:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+.item-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #d35400;
+  margin-bottom: 10px;
+}
+
+.item-description {
+  font-size: 1.1rem;
+  font-family: 'Roboto', sans-serif;
+  color: #555;
+  margin-bottom: 12px;
+}
+
+.item-price {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #27ae60;
+}
+
+/* No items */
+.no-items {
+  font-size: 1.3rem;
+  font-family: 'Roboto', sans-serif;
+  color: #7f8c8d;
+  text-align: center;
+  padding: 30px;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Loading state */
+.loading-container {
+  justify-content: center;
+  padding: 100px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #d4a373;
+  border-top: 5px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 1.3rem;
+  font-family: 'Roboto', sans-serif;
+  color: #34495e;
+}
+
+/* Footer */
+.footer {
+  padding: 20px;
+  font-size: 0.9rem;
+  font-family: 'Roboto', sans-serif;
+  color: #999;
+  text-align: center;
+  width: 100%;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .header h1 {
+    font-size: 2.2rem;
+  }
+
+  .subtitle {
+    font-size: 1.1rem;
+  }
+
+  .qrcode-wrapper {
+    padding: 30px;
+  }
+
+  .qrcode-title {
+    font-size: 1.4rem;
+  }
+
+  .qrcode {
+    max-width: 200px;
+  }
+
+  .menu-item {
+    padding: 20px;
+  }
+
+  .item-title {
+    font-size: 1.3rem;
+  }
+
+  .item-price {
+    font-size: 1.2rem;
+  }
+  .search-filter {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .search-input {
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 300px;
+  }
+  
+  .category-filter {
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+  }
+  .search-filter {
+    display: flex;
+    gap: 1.5rem; /* Increased spacing for balance */
+    padding: 1.5rem 20px; /* Matches padding patterns */
+    justify-content: center;
+    align-items: center;
+    background: #fff; /* Matches other white containers */
+    border-radius: 15px; /* Consistent with menu-item */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08); /* Soft shadow like qrcode-wrapper */
+    max-width: 1200px; /* Aligns with menu-grid */
+    margin: 20px auto; /* Centered with spacing */
+  }
+  
+  .search-input {
+    padding: 0.75rem 1rem; /* Comfortable padding */
+    font-size: 1.1rem; /* Matches item-description */
+    font-family: 'Roboto', sans-serif; /* Consistent typography */
+    color: #2d2d2d; /* Matches body text */
+    border: 2px solid #d4a373; /* Matches qrcode border */
+    border-radius: 10px; /* Slightly softer corners */
+    width: 100%;
+    max-width: 350px; /* Slightly larger than original */
+    background: #fafafa; /* Subtle contrast */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth interaction */
+  }
+  
+  .search-input:focus {
+    outline: none;
+    border-color: #d35400; /* Matches item-title color */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Subtle focus effect */
+  }
+  
+  .category-filter {
+    padding: 0.75rem 1rem; /* Matches search-input */
+    font-size: 1.1rem; /* Consistent with search-input */
+    font-family: 'Roboto', sans-serif; /* Matches other text */
+    color: #34495e; /* Matches qrcode-title */
+    border: 2px solid #d4a373; /* Matches search-input */
+    border-radius: 10px; /* Consistent rounding */
+    background: #fff; /* Clean look */
+    cursor: pointer; /* Indicates interactivity */
+    transition: border-color 0.3s ease, background-color 0.3s ease; /* Smooth hover */
+  }
+  
+  .category-filter:hover {
+    border-color: #27ae60; /* Matches item-price */
+    background-color: #f7f1e3; /* Subtle hover effect from app-container */
+  }
+  
+  .category-filter:focus {
+    outline: none;
+    border-color: #d35400; /* Matches search-input focus */
+  }
+  
+  /* Responsive adjustments within media query */
+  @media (max-width: 768px) {
+    .search-filter {
+      flex-direction: column; /* Stack vertically on small screens */
+      gap: 1rem;
+      padding: 1rem;
+    }
+  
+    .search-input {
+      max-width: 100%; /* Full width on mobile */
+      font-size: 1rem;
+    }
+  
+    .category-filter {
+      width: 100%; /* Full width for consistency */
+      font-size: 1rem;
+    }
+  }
+  /* Your existing App.css content remains here... */
+
+/* Replace these existing styles in your App.css */
+
+/* Search and Filter Bar */
+.search-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Tight spacing like Amazon */
+  padding: 10px 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  max-width: 1200px;
+  margin: 20px auto;
+  flex-wrap: nowrap; /* Keep horizontal unless screen is too small */
+  overflow-x: auto; /* Scroll horizontally if needed */
+}
+
+/* Search Bar */
+.search-bar {
+  flex: 1; /* Takes up most space like Amazon */
+  padding: 10px 15px;
+  font-size: 1.1rem;
+  font-family: 'Roboto', sans-serif;
+  color: #2d2d2d;
+  border: 2px solid #d4a373;
+  border-radius: 8px;
+  background: #fafafa;
+  min-width: 250px; /* Ensures it doesn’t shrink too much */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.search-bar:focus {
+  outline: none;
+  border-color: #d35400;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Generic Filter Button Styles */
+.filter-btn {
+  padding: 10px 15px;
+  font-size: 1rem;
+  font-family: 'Roboto', sans-serif;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  white-space: nowrap; /* Prevent text wrapping */
+}
+
+.filter-btn:hover {
+  transform: scale(1.05);
+}
+
+.filter-btn:active {
+  transform: scale(1);
+}
+
+/* Sort Button */
+.sort-btn {
+  background: #34495e;
+}
+
+.sort-btn:hover {
+  background: #2c3e50;
+}
+
+/* Clear Button */
+.clear-btn {
+  background: #d35400;
+}
+
+.clear-btn:hover {
+  background: #b84500;
+}
+
+/* Category Chips Container */
+.category-filter-chips {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto; /* Scrollable if too many chips */
+  padding: 0 5px;
+}
+
+/* Category Chips */
+.chip {
+  padding: 8px 12px;
+  font-size: 0.95rem;
+  font-family: 'Roboto', sans-serif;
+  color: #34495e;
+  background: #f7f1e3;
+  border: 2px solid #d4a373;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.chip:hover {
+  background: #d4a373;
+  color: #fff;
+}
+
+.chip.active {
+  background: #d35400;
+  color: #fff;
+  border-color: #d35400;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .search-filter-bar {
+    flex-direction: column; /* Stack vertically on small screens */
+    align-items: stretch;
+    padding: 15px;
+  }
+
+  .search-bar {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .filter-btn {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .category-filter-chips {
+    justify-content: center;
+    padding: 10px 0;
+  }
+
+  .chip {
+    font-size: 0.9rem;
+    padding: 6px 10px;
+  }
+}
+/* Your existing App.css content remains here... */
+
+/* Add these styles at the bottom */
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+/* Your existing App.css content remains here... */
+
+/* Replace the existing .favorite-btn styles with these */
+.favorite-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: #d4a373; /* Unfavorited state */
+  cursor: pointer;
+  transition: color 0.3s ease, transform 0.2s ease;
+  padding: 5px; /* Small padding to avoid clipping */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none; /* Remove focus outline */
+}
+
+.favorite-btn.favorited {
+  color: #d35400; /* Favorited state */
+  animation: pulse 0.3s ease;
+}
+
+.favorite-btn:hover {
+  color: #b84500;
+  transform: scale(1.2);
+}
+
+.favorite-btn:active {
+  transform: scale(1);
+}
+
+/* Ensure no outline on focus */
+.favorite-btn:focus {
+  outline: none;
+}
+
+/* Animation for favoriting */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+/* Responsive tweak */
+@media (max-width: 768px) {
+  .favorite-btn {
+    font-size: 1rem;
+  }
+}
+}

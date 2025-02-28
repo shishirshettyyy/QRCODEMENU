@@ -1,0 +1,90 @@
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const QRCode = require('qrcode');
+require('dotenv').config();
+
+const MenuItem = require('./models/MenuItem');
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+// Configurable IP and ports (update these if your IP changes)
+const BACKEND_PORT = process.env.PORT || 5000;
+const FRONTEND_PORT = 5173; // Default Vite port
+const IP = '192.168.0.107'; // Update this if your local IP changes
+
+// Connect to MongoDB
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.error('MongoDB connection error:', err));
+
+// Updated API to get menu items with search and filter
+app.get('/api/menu', async (req, res) => {
+  try {
+    const { search, category } = req.query;
+    let query = {};
+
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } },
+      ];
+    }
+
+    if (category) {
+      query.category = category;
+    }
+
+    const menuItems = await MenuItem.find(query);
+    console.log('Fetched menu items:', menuItems.length); // Debug log
+    res.json(menuItems);
+  } catch (error) {
+    console.error('Error fetching menu:', error);
+    res.status(500).json({ error: 'Failed to fetch menu' });
+  }
+});
+
+// API to add a single menu item
+app.post('/api/menu', async (req, res) => {
+  try {
+    const newItem = new MenuItem(req.body);
+    await newItem.save();
+    console.log('Added new menu item:', newItem); // Debug log
+    res.json(newItem);
+  } catch (error) {
+    console.error('Error adding menu item:', error);
+    res.status(500).json({ error: 'Failed to add item' });
+  }
+});
+
+// API to add multiple menu items (bulk)
+app.post('/api/menu/bulk', async (req, res) => {
+  try {
+    const menuItems = req.body;
+    const insertedItems = await MenuItem.insertMany(menuItems);
+    console.log('Bulk inserted items:', insertedItems.length); // Debug log
+    res.json(insertedItems);
+  } catch (error) {
+    console.error('Bulk Insert Error:', error);
+    res.status(500).json({ error: 'Failed to add items' });
+  }
+});
+
+// API to generate QR code
+app.get('/api/qrcode', async (req, res) => {
+  try {
+    const url = `http://${IP}:${FRONTEND_PORT}/menu`; // Dynamic URL
+    const qrCode = await QRCode.toDataURL(url);
+    console.log('Generated QR code for URL:', url); // Debug log
+    res.json({ qrCode });
+  } catch (error) {
+    console.error('QR Code Generation Error:', error);
+    res.status(500).json({ error: 'Failed to generate QR code' });
+  }
+});
+
+app.listen(BACKEND_PORT, () => {
+  console.log(`Server running on http://${IP}:${BACKEND_PORT}`);
+});
