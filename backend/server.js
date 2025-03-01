@@ -10,17 +10,26 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Configurable IP and ports (update these if your IP changes)
+// Configurable IP and ports
 const BACKEND_PORT = process.env.PORT || 5000;
-const FRONTEND_PORT = 5173; // Default Vite port
-const IP = '192.168.0.107'; // Update this if your local IP changes
+const FRONTEND_PORT = 5173;
+const IP = '192.168.0.107';
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection error:', err));
 
-// Updated API to get menu items with search and filter
+// Admin authentication middleware
+const adminAuth = (req, res, next) => {
+  const adminKey = req.headers['x-admin-key'];
+  if (adminKey !== process.env.ADMIN_KEY) {
+    return res.status(403).json({ error: 'Unauthorized' });
+  }
+  next();
+};
+
+// Get all menu items
 app.get('/api/menu', async (req, res) => {
   try {
     const { search, category } = req.query;
@@ -38,7 +47,7 @@ app.get('/api/menu', async (req, res) => {
     }
 
     const menuItems = await MenuItem.find(query);
-    console.log('Fetched menu items:', menuItems.length); // Debug log
+    console.log('Fetched menu items:', menuItems.length);
     res.json(menuItems);
   } catch (error) {
     console.error('Error fetching menu:', error);
@@ -46,12 +55,12 @@ app.get('/api/menu', async (req, res) => {
   }
 });
 
-// API to add a single menu item
-app.post('/api/menu', async (req, res) => {
+// Add a single menu item
+app.post('/api/menu', adminAuth, async (req, res) => {
   try {
     const newItem = new MenuItem(req.body);
     await newItem.save();
-    console.log('Added new menu item:', newItem); // Debug log
+    console.log('Added new menu item:', newItem);
     res.json(newItem);
   } catch (error) {
     console.error('Error adding menu item:', error);
@@ -59,12 +68,12 @@ app.post('/api/menu', async (req, res) => {
   }
 });
 
-// API to add multiple menu items (bulk)
-app.post('/api/menu/bulk', async (req, res) => {
+// Add multiple menu items (bulk)
+app.post('/api/menu/bulk', adminAuth, async (req, res) => {
   try {
     const menuItems = req.body;
     const insertedItems = await MenuItem.insertMany(menuItems);
-    console.log('Bulk inserted items:', insertedItems.length); // Debug log
+    console.log('Bulk inserted items:', insertedItems.length);
     res.json(insertedItems);
   } catch (error) {
     console.error('Bulk Insert Error:', error);
@@ -72,12 +81,44 @@ app.post('/api/menu/bulk', async (req, res) => {
   }
 });
 
-// API to generate QR code
+// Update a menu item
+app.put('/api/menu/:id', adminAuth, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updatedItem = await MenuItem.findByIdAndUpdate(id, req.body, { new: true });
+    if (!updatedItem) {
+      return res.status(404).json({ error: 'Menu item not found' });
+    }
+    console.log('Updated menu item:', updatedItem);
+    res.json(updatedItem);
+  } catch (error) {
+    console.error('Error updating menu item:', error);
+    res.status(500).json({ error: 'Failed to update item' });
+  }
+});
+
+// Delete a menu item
+app.delete('/api/menu/:id', adminAuth, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedItem = await MenuItem.findByIdAndDelete(id);
+    if (!deletedItem) {
+      return res.status(404).json({ error: 'Menu item not found' });
+    }
+    console.log('Deleted menu item:', deletedItem);
+    res.json({ message: 'Menu item deleted' });
+  } catch (error) {
+    console.error('Error deleting menu item:', error);
+    res.status(500).json({ error: 'Failed to delete item' });
+  }
+});
+
+// Generate QR code
 app.get('/api/qrcode', async (req, res) => {
   try {
-    const url = `http://${IP}:${FRONTEND_PORT}/menu`; // Dynamic URL
+    const url = `http://${IP}:${FRONTEND_PORT}/menu`;
     const qrCode = await QRCode.toDataURL(url);
-    console.log('Generated QR code for URL:', url); // Debug log
+    console.log('Generated QR code for URL:', url);
     res.json({ qrCode });
   } catch (error) {
     console.error('QR Code Generation Error:', error);

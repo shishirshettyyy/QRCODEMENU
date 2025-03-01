@@ -1,86 +1,119 @@
-/* Reset and base styles */
+/* ==========================================================================
+   Reset and Base Styles
+   ========================================================================== */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-body {
-  font-family: 'Playfair Display', serif;
-  background-color: #fafafa;
-  color: #2d2d2d;
-  line-height: 1.8;
+:root {
+  /* Custom properties for consistency */
+  --color-primary: #d35400; /* Main accent */
+  --color-secondary: #d4a373; /* Secondary accent */
+  --color-success: #27ae60; /* Price */
+  --color-dark: #1a1a1a; /* Headers */
+  --color-text: #2d2d2d; /* Body text */
+  --color-muted: #666; /* Subtitles */
+  --color-light: #fafafa; /* Backgrounds */
+  --color-white: #ffffff;
+  --color-shadow: rgba(0, 0, 0, 0.08);
+  --spacing-sm: 0.5rem; /* 8px */
+  --spacing-md: 1rem; /* 16px */
+  --spacing-lg: 1.5rem; /* 24px */
+  --spacing-xl: 2rem; /* 32px */
+  --border-radius-sm: 0.5rem; /* 8px */
+  --border-radius-md: 1rem; /* 16px */
+  --shadow-sm: 0 4px 15px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.08);
+  --font-primary: 'Playfair Display', serif;
+  --font-secondary: 'Roboto', sans-serif;
 }
 
-/* Main container */
+body {
+  font-family: var(--font-primary);
+  background-color: var(--color-light);
+  color: var(--color-text);
+  line-height: 1.8;
+  font-size: 1rem;
+}
+
+/* ==========================================================================
+   Main Container
+   ========================================================================== */
 .app-container {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(to bottom, #ffffff 0%, #f7f1e3 100%);
+  background: linear-gradient(to bottom, var(--color-white) 0%, #f7f1e3 100%);
 }
 
-/* Header */
+/* ==========================================================================
+   Header
+   ========================================================================== */
 .header {
   text-align: center;
-  padding: 40px 20px;
+  padding: var(--spacing-xl) var(--spacing-md);
 }
 
 .header h1 {
   font-size: 2.8rem;
   font-weight: 700;
-  color: #1a1a1a;
-  letter-spacing: 0.5px;
+  color: var(--color-dark);
+  letter-spacing: 0.03em;
 }
 
 .subtitle {
-  font-size: 1.3rem;
-  font-family: 'Roboto', sans-serif;
+  font-size: 1.25rem;
+  font-family: var(--font-secondary);
   font-weight: 300;
-  color: #666;
-  margin-top: 10px;
+  color: var(--color-muted);
+  margin-top: var(--spacing-sm);
 }
 
-/* Main content */
+/* ==========================================================================
+   Main Content
+   ========================================================================== */
 .main-content {
   flex: 1;
   width: 100%;
-  padding: 0 20px;
+  padding: 0 var(--spacing-md);
 }
 
 .qr-centered {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: calc(100vh - 200px); /* Adjust for header/footer height */
+  min-height: calc(100vh - 12.5rem); /* Adjusted for header/footer */
 }
 
-/* QR Code section */
+/* ==========================================================================
+   QR Code Section
+   ========================================================================== */
 .qrcode-wrapper {
-  background: #fff;
-  padding: 40px;
-  border-radius: 20px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  background: var(--color-white);
+  padding: var(--spacing-xl);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-sm);
   text-align: center;
-  max-width: 450px;
+  max-width: 28rem;
   width: 100%;
 }
 
 .qrcode-title {
-  font-size: 1.6rem;
-  font-family: 'Roboto', sans-serif;
+  font-size: 1.5rem;
+  font-family: var(--font-secondary);
   font-weight: 500;
   color: #34495e;
-  margin-bottom: 25px;
+  margin-bottom: var(--spacing-lg);
 }
 
 .qrcode {
-  display: block;
-  max-width: 250px;
+  max-width: 15.625rem; /* 250px */
   height: auto;
-  margin: 0 auto 20px;
-  border: 3px solid #d4a373;
-  border-radius: 12px;
+  margin: 0 auto var(--spacing-md) auto;
+  border: 0.1875rem solid var(--color-secondary); /* 3px */
+  border-radius: var(--border-radius-sm);
   transition: transform 0.3s ease;
 }
 
@@ -89,296 +122,66 @@ body {
 }
 
 .qrcode-instruction {
-  font-size: 1.1rem;
-  font-family: 'Roboto', sans-serif;
+  font-size: 1.125rem;
+  font-family: var(--font-secondary);
   color: #7f8c8d;
 }
 
-/* Menu section */
-.menu-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 30px;
-  max-width: 1200px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 20px 0;
-}
-
-.menu-item {
-  background: #fff;
-  padding: 25px;
-  border-radius: 15px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.menu-item:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
-}
-
-.item-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #d35400;
-  margin-bottom: 10px;
-}
-
-.item-description {
-  font-size: 1.1rem;
-  font-family: 'Roboto', sans-serif;
-  color: #555;
-  margin-bottom: 12px;
-}
-
-.item-price {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: #27ae60;
-}
-
-/* No items */
-.no-items {
-  font-size: 1.3rem;
-  font-family: 'Roboto', sans-serif;
-  color: #7f8c8d;
-  text-align: center;
-  padding: 30px;
-  background: #fff;
-  border-radius: 15px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-}
-
-/* Loading state */
-.loading-container {
-  justify-content: center;
-  padding: 100px 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.spinner {
-  width: 50px;
-  height: 50px;
-  border: 5px solid #d4a373;
-  border-top: 5px solid transparent;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 20px;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.loading-text {
-  font-size: 1.3rem;
-  font-family: 'Roboto', sans-serif;
-  color: #34495e;
-}
-
-/* Footer */
-.footer {
-  padding: 20px;
-  font-size: 0.9rem;
-  font-family: 'Roboto', sans-serif;
-  color: #999;
-  text-align: center;
-  width: 100%;
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-  .header h1 {
-    font-size: 2.2rem;
-  }
-
-  .subtitle {
-    font-size: 1.1rem;
-  }
-
-  .qrcode-wrapper {
-    padding: 30px;
-  }
-
-  .qrcode-title {
-    font-size: 1.4rem;
-  }
-
-  .qrcode {
-    max-width: 200px;
-  }
-
-  .menu-item {
-    padding: 20px;
-  }
-
-  .item-title {
-    font-size: 1.3rem;
-  }
-
-  .item-price {
-    font-size: 1.2rem;
-  }
-  .search-filter {
-    display: flex;
-    gap: 1rem;
-    padding: 1rem;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .search-input {
-    padding: 0.5rem;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    width: 300px;
-  }
-  
-  .category-filter {
-    padding: 0.5rem;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: white;
-  }
-  .search-filter {
-    display: flex;
-    gap: 1.5rem; /* Increased spacing for balance */
-    padding: 1.5rem 20px; /* Matches padding patterns */
-    justify-content: center;
-    align-items: center;
-    background: #fff; /* Matches other white containers */
-    border-radius: 15px; /* Consistent with menu-item */
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08); /* Soft shadow like qrcode-wrapper */
-    max-width: 1200px; /* Aligns with menu-grid */
-    margin: 20px auto; /* Centered with spacing */
-  }
-  
-  .search-input {
-    padding: 0.75rem 1rem; /* Comfortable padding */
-    font-size: 1.1rem; /* Matches item-description */
-    font-family: 'Roboto', sans-serif; /* Consistent typography */
-    color: #2d2d2d; /* Matches body text */
-    border: 2px solid #d4a373; /* Matches qrcode border */
-    border-radius: 10px; /* Slightly softer corners */
-    width: 100%;
-    max-width: 350px; /* Slightly larger than original */
-    background: #fafafa; /* Subtle contrast */
-    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth interaction */
-  }
-  
-  .search-input:focus {
-    outline: none;
-    border-color: #d35400; /* Matches item-title color */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Subtle focus effect */
-  }
-  
-  .category-filter {
-    padding: 0.75rem 1rem; /* Matches search-input */
-    font-size: 1.1rem; /* Consistent with search-input */
-    font-family: 'Roboto', sans-serif; /* Matches other text */
-    color: #34495e; /* Matches qrcode-title */
-    border: 2px solid #d4a373; /* Matches search-input */
-    border-radius: 10px; /* Consistent rounding */
-    background: #fff; /* Clean look */
-    cursor: pointer; /* Indicates interactivity */
-    transition: border-color 0.3s ease, background-color 0.3s ease; /* Smooth hover */
-  }
-  
-  .category-filter:hover {
-    border-color: #27ae60; /* Matches item-price */
-    background-color: #f7f1e3; /* Subtle hover effect from app-container */
-  }
-  
-  .category-filter:focus {
-    outline: none;
-    border-color: #d35400; /* Matches search-input focus */
-  }
-  
-  /* Responsive adjustments within media query */
-  @media (max-width: 768px) {
-    .search-filter {
-      flex-direction: column; /* Stack vertically on small screens */
-      gap: 1rem;
-      padding: 1rem;
-    }
-  
-    .search-input {
-      max-width: 100%; /* Full width on mobile */
-      font-size: 1rem;
-    }
-  
-    .category-filter {
-      width: 100%; /* Full width for consistency */
-      font-size: 1rem;
-    }
-  }
-  /* Your existing App.css content remains here... */
-
-/* Replace these existing styles in your App.css */
-
-/* Search and Filter Bar */
+/* ==========================================================================
+   Search and Filter Bar
+   ========================================================================== */
 .search-filter-bar {
   display: flex;
   align-items: center;
-  gap: 10px; /* Tight spacing like Amazon */
-  padding: 10px 20px;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  max-width: 1200px;
-  margin: 20px auto;
-  flex-wrap: nowrap; /* Keep horizontal unless screen is too small */
-  overflow-x: auto; /* Scroll horizontally if needed */
+  gap: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--color-white);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-md);
+  max-width: 75rem; /* 1200px */
+  margin: var(--spacing-lg) auto;
+  flex-wrap: wrap;
 }
 
-/* Search Bar */
 .search-bar {
-  flex: 1; /* Takes up most space like Amazon */
-  padding: 10px 15px;
-  font-size: 1.1rem;
-  font-family: 'Roboto', sans-serif;
-  color: #2d2d2d;
-  border: 2px solid #d4a373;
-  border-radius: 8px;
-  background: #fafafa;
-  min-width: 250px; /* Ensures it doesn’t shrink too much */
+  flex: 1;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: 1.125rem;
+  font-family: var(--font-secondary);
+  color: var(--color-text);
+  border: 2px solid var(--color-secondary);
+  border-radius: var(--border-radius-sm);
+  background: var(--color-light);
+  min-width: 15.625rem; /* 250px */
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .search-bar:focus {
   outline: none;
-  border-color: #d35400;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-sm);
 }
 
-/* Generic Filter Button Styles */
 .filter-btn {
-  padding: 10px 15px;
+  padding: var(--spacing-sm) var(--spacing-md);
   font-size: 1rem;
-  font-family: 'Roboto', sans-serif;
-  color: #fff;
+  font-family: var(--font-secondary);
+  color: var(--color-white);
   border: none;
-  border-radius: 8px;
+  border-radius: var(--border-radius-sm);
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease;
-  white-space: nowrap; /* Prevent text wrapping */
 }
 
 .filter-btn:hover {
   transform: scale(1.05);
 }
 
-.filter-btn:active {
-  transform: scale(1);
+.filter-btn:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 
-/* Sort Button */
 .sort-btn {
   background: #34495e;
 }
@@ -387,105 +190,113 @@ body {
   background: #2c3e50;
 }
 
-/* Clear Button */
 .clear-btn {
-  background: #d35400;
+  background: var(--color-primary);
 }
 
 .clear-btn:hover {
   background: #b84500;
 }
 
-/* Category Chips Container */
 .category-filter-chips {
   display: flex;
-  gap: 8px;
-  overflow-x: auto; /* Scrollable if too many chips */
-  padding: 0 5px;
+  gap: var(--spacing-sm);
+  overflow-x: auto;
+  padding: 0 var(--spacing-sm);
 }
 
-/* Category Chips */
 .chip {
-  padding: 8px 12px;
-  font-size: 0.95rem;
-  font-family: 'Roboto', sans-serif;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: 0.9375rem;
+  font-family: var(--font-secondary);
   color: #34495e;
   background: #f7f1e3;
-  border: 2px solid #d4a373;
-  border-radius: 20px;
+  border: 2px solid var(--color-secondary);
+  border-radius: 1.25rem; /* 20px */
   cursor: pointer;
-  transition: all 0.3s ease;
-  white-space: nowrap;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 .chip:hover {
-  background: #d4a373;
-  color: #fff;
+  background: var(--color-secondary);
+  color: var(--color-white);
 }
 
 .chip.active {
-  background: #d35400;
-  color: #fff;
-  border-color: #d35400;
+  background: var(--color-primary);
+  color: var(--color-white);
+  border-color: var(--color-primary);
 }
 
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-  .search-filter-bar {
-    flex-direction: column; /* Stack vertically on small screens */
-    align-items: stretch;
-    padding: 15px;
-  }
-
-  .search-bar {
-    width: 100%;
-    margin-bottom: 10px;
-  }
-
-  .filter-btn {
-    width: 100%;
-    padding: 10px;
-  }
-
-  .category-filter-chips {
-    justify-content: center;
-    padding: 10px 0;
-  }
-
-  .chip {
-    font-size: 0.9rem;
-    padding: 6px 10px;
-  }
+.chip:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
-/* Your existing App.css content remains here... */
 
-/* Add these styles at the bottom */
+/* ==========================================================================
+   Menu Section
+   ========================================================================== */
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(18.75rem, 1fr)); /* 300px */
+  gap: var(--spacing-lg);
+  max-width: 75rem; /* 1200px */
+  width: 100%;
+  margin: 0 auto;
+  padding: var(--spacing-lg) 0;
+}
+
+.menu-item {
+  background: var(--color-white);
+  padding: var(--spacing-lg);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-md);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.menu-item:hover {
+  transform: translateY(-0.5rem);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
 .item-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: var(--spacing-md);
 }
 
-/* Your existing App.css content remains here... */
+.item-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-primary);
+}
 
-/* Replace the existing .favorite-btn styles with these */
+.item-description {
+  font-size: 1.125rem;
+  font-family: var(--font-secondary);
+  color: #555;
+  margin-bottom: var(--spacing-md);
+}
+
+.item-price {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-success);
+}
+
 .favorite-btn {
   background: none;
   border: none;
-  font-size: 1.2rem;
-  color: #d4a373; /* Unfavorited state */
+  font-size: 1.25rem;
+  color: var(--color-secondary);
   cursor: pointer;
   transition: color 0.3s ease, transform 0.2s ease;
-  padding: 5px; /* Small padding to avoid clipping */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  outline: none; /* Remove focus outline */
+  padding: var(--spacing-sm);
 }
 
 .favorite-btn.favorited {
-  color: #d35400; /* Favorited state */
+  color: var(--color-primary);
   animation: pulse 0.3s ease;
 }
 
@@ -494,26 +305,309 @@ body {
   transform: scale(1.2);
 }
 
-.favorite-btn:active {
-  transform: scale(1);
-}
-
-/* Ensure no outline on focus */
 .favorite-btn:focus {
-  outline: none;
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 
-/* Animation for favoriting */
 @keyframes pulse {
   0% { transform: scale(1); }
   50% { transform: scale(1.3); }
   100% { transform: scale(1); }
 }
 
-/* Responsive tweak */
-@media (max-width: 768px) {
+/* ==========================================================================
+   No Items
+   ========================================================================== */
+.no-items {
+  font-size: 1.25rem;
+  font-family: var(--font-secondary);
+  color: #7f8c8d;
+  text-align: center;
+  padding: var(--spacing-lg);
+  background: var(--color-white);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-md);
+}
+
+/* ==========================================================================
+   Loading State
+   ========================================================================== */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 6.25rem var(--spacing-md); /* 100px */
+}
+
+.spinner {
+  width: 3.125rem; /* 50px */
+  height: 3.125rem;
+  border: 0.3125rem solid var(--color-secondary); /* 5px */
+  border-top: 0.3125rem solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: var(--spacing-md);
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 1.25rem;
+  font-family: var(--font-secondary);
+  color: #34495e;
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+.footer {
+  padding: var(--spacing-md);
+  font-size: 0.875rem;
+  font-family: var(--font-secondary);
+  color: #999;
+  text-align: center;
+  width: 100%;
+}
+
+/* ==========================================================================
+   Admin Form
+   ========================================================================== */
+.admin-form {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-white);
+  padding: var(--spacing-lg);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-md);
+  z-index: 1000;
+  width: 90%;
+  max-width: 25rem; /* 400px */
+}
+
+.admin-form h2 {
+  font-size: 1.5rem;
+  font-family: var(--font-secondary);
+  color: var(--color-dark);
+  margin-bottom: var(--spacing-md);
+}
+
+.admin-form input {
+  display: block;
+  width: 100%;
+  margin-bottom: var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: 1rem;
+  font-family: var(--font-secondary);
+  border: 2px solid var(--color-secondary);
+  border-radius: var(--border-radius-sm);
+  transition: border-color 0.3s ease;
+}
+
+.admin-form input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.admin-form button {
+  padding: var(--spacing-sm) var(--spacing-md);
+  margin-right: var(--spacing-md);
+  margin-top: var(--spacing-sm);
+  font-size: 1rem;
+  font-family: var(--font-secondary);
+  color: var(--color-white);
+  background-color: #007bff;
+  border: none;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.admin-form button:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+.admin-form button:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Responsive Design
+   ========================================================================== */
+@media (max-width: 48rem) { /* 768px */
+  .header h1 {
+    font-size: 2.2rem;
+  }
+
+  .subtitle {
+    font-size: 1.125rem;
+  }
+
+  .qrcode-wrapper {
+    padding: var(--spacing-lg);
+  }
+
+  .qrcode-title {
+    font-size: 1.375rem;
+  }
+
+  .qrcode {
+    max-width: 12.5rem; /* 200px */
+  }
+
+  .search-filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+    padding: var(--spacing-md);
+  }
+
+  .search-bar {
+    width: 100%;
+    margin-bottom: var(--spacing-md);
+  }
+
+  .filter-btn {
+    width: 100%;
+  }
+
+  .category-filter-chips {
+    justify-content: center;
+    padding: var(--spacing-md) 0;
+  }
+
+  .chip {
+    font-size: 0.875rem;
+    padding: 0.375rem var(--spacing-sm); /* 6px 8px */
+  }
+
+  .menu-item {
+    padding: var(--spacing-md);
+  }
+
+  .item-title {
+    font-size: 1.375rem;
+  }
+
+  .item-price {
+    font-size: 1.125rem;
+  }
+
   .favorite-btn {
     font-size: 1rem;
+  }
+
+  .admin-form {
+    top: 10%;
+    width: 95%;
+  }
+  /* Add or ensure these styles are in your App.css under the "Favorites List" section */
+
+/* ==========================================================================
+   Favorites List
+   ========================================================================== */
+.favorites-list {
+  background: var(--color-white);
+  padding: var(--spacing-lg);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-md);
+  margin: var(--spacing-lg) auto;
+  max-width: 75rem;
+  width: 100%;
+}
+
+.favorites-list ul {
+  list-style: none;
+  padding: 0;
+}
+
+.favorite-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-sm) 0;
+  border-bottom: 1px solid #eee;
+}
+
+.favorite-item span:first-child {
+  font-size: 1.125rem;
+  font-family: var(--font-secondary);
+  color: var(--color-text);
+}
+
+.favorite-item span:nth-child(2) {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-success);
+}
+
+.remove-favorite-btn {
+  padding: var(--spacing-sm);
+  font-size: 0.875rem;
+  font-family: var(--font-secondary);
+  color: var(--color-white);
+  background-color: #e74c3c;
+  border: none;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.remove-favorite-btn:hover {
+  background-color: #c0392b;
+  transform: scale(1.05);
+}
+
+.remove-favorite-btn:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.close-favorites-btn {
+  display: block;
+  margin: var(--spacing-md) auto 0;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: 1rem;
+  font-family: var(--font-secondary);
+  color: var(--color-white);
+  background-color: #34495e;
+  border: none;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.close-favorites-btn:hover {
+  background-color: #2c3e50;
+  transform: scale(1.05);
+}
+
+.close-favorites-btn:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 48rem) {
+  .favorites-list {
+    padding: var(--spacing-md);
+  }
+
+  .favorite-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+
+  .remove-favorite-btn {
+    width: 100%;
   }
 }
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom'; // Added useNavigate
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import { FaHeart } from 'react-icons/fa';
@@ -10,8 +10,13 @@ const loadFavorites = () => {
   return saved ? JSON.parse(saved) : [];
 };
 
+// Admin Axios instance without hardcoded key
+const adminApi = axios.create({
+  baseURL: 'http://192.168.0.107:5000/api',
+});
+
 function Home({ qrCode }) {
-  console.log('Rendering Home with QR Code:', qrCode); // Debug QR code value
+  console.log('Rendering Home with QR Code:', qrCode);
   return (
     <div className="app-container">
       <header className="header">
@@ -40,11 +45,11 @@ Home.propTypes = {
   qrCode: PropTypes.string,
 };
 
-function Menu({ menuItems, setMenuItems }) {
+function Menu({ menuItems, setMenuItems, favorites, toggleFavorite }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [sortOrder, setSortOrder] = useState(null);
-  const [favorites, setFavorites] = useState(loadFavorites);
+  const navigate = useNavigate(); // For navigation to favorites page
 
   const categories = [
     'All',
@@ -83,18 +88,6 @@ function Menu({ menuItems, setMenuItems }) {
     fetchMenuItems();
   }, [searchTerm, selectedCategory, sortOrder, setMenuItems]);
 
-  useEffect(() => {
-    localStorage.setItem('favorites', JSON.stringify(favorites));
-  }, [favorites]);
-
-  const toggleFavorite = (itemId) => {
-    setFavorites((prev) =>
-      prev.includes(itemId)
-        ? prev.filter((id) => id !== itemId)
-        : [...prev, itemId]
-    );
-  };
-
   const handleClear = () => {
     setSearchTerm('');
     setSelectedCategory('All');
@@ -103,6 +96,11 @@ function Menu({ menuItems, setMenuItems }) {
 
   const toggleSort = () => {
     setSortOrder((prev) => (prev === 'asc' ? 'desc' : prev === 'desc' ? null : 'asc'));
+  };
+
+  const handleFavoriteClick = (itemId) => {
+    toggleFavorite(itemId);
+    navigate('/favorites'); // Navigate to favorites page
   };
 
   return (
@@ -149,7 +147,7 @@ function Menu({ menuItems, setMenuItems }) {
                   <h3 className="item-title">{item.name}</h3>
                   <button
                     className={`favorite-btn ${favorites.includes(item._id) ? 'favorited' : ''}`}
-                    onClick={() => toggleFavorite(item._id)}
+                    onClick={() => handleFavoriteClick(item._id)}
                   >
                     <FaHeart />
                   </button>
@@ -180,35 +178,238 @@ Menu.propTypes = {
     })
   ).isRequired,
   setMenuItems: PropTypes.func.isRequired,
+  favorites: PropTypes.arrayOf(PropTypes.string).isRequired,
+  toggleFavorite: PropTypes.func.isRequired,
+};
+
+function Favorites({ menuItems, favorites, toggleFavorite }) {
+  const navigate = useNavigate();
+
+  const favoriteItems = menuItems.filter((item) => favorites.includes(item._id));
+
+  return (
+    <div className="app-container">
+      <header className="header">
+        <h1>Your Favorites</h1>
+        <p className="subtitle">Your Selected Delights</p>
+      </header>
+      <main className="main-content">
+        <div className="favorites-list">
+          {favoriteItems.length > 0 ? (
+            <ul>
+              {favoriteItems.map((item) => (
+                <li key={item._id} className="favorite-item">
+                  <span>{item.name}</span>
+                  <span>₹{item.price.toFixed(2)}</span>
+                  <button
+                    className="remove-favorite-btn"
+                    onClick={() => toggleFavorite(item._id)}
+                  >
+                    Remove
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No favorites selected yet.</p>
+          )}
+          <button className="close-favorites-btn" onClick={() => navigate('/menu')}>
+            Back to Menu
+          </button>
+        </div>
+      </main>
+      <footer className="footer">
+        <p>© 2025 The Gourmet Haven. All rights reserved.</p>
+      </footer>
+    </div>
+  );
+}
+
+Favorites.propTypes = {
+  menuItems: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      description: PropTypes.string.isRequired,
+      price: PropTypes.number.isRequired,
+    })
+  ).isRequired,
+  favorites: PropTypes.arrayOf(PropTypes.string).isRequired,
+  toggleFavorite: PropTypes.func.isRequired,
+};
+
+function AdminForm({ setMenuItems, closeForm }) {
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [price, setPrice] = useState('');
+  const [category, setCategory] = useState('');
+  const [id, setId] = useState('');
+  const [adminKey, setAdminKey] = useState('');
+
+  const handleAdd = async (e) => {
+    e.preventDefault();
+    if (!adminKey) return alert('Please enter the admin key');
+    try {
+      const newItem = { name, description, price: parseFloat(price), category };
+      const response = await adminApi.post('/menu', newItem, {
+        headers: { 'X-Admin-Key': adminKey },
+      });
+      setMenuItems((prev) => [...prev, response.data]);
+      resetForm();
+    } catch (error) {
+      console.error('Error adding item:', error);
+      alert('Failed to add item. Check admin key or server status.');
+    }
+  };
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    if (!id) return alert('Please enter an ID to update');
+    if (!adminKey) return alert('Please enter the admin key');
+    try {
+      const updatedItem = { name, description, price: parseFloat(price), category };
+      const response = await adminApi.put(`/menu/${id}`, updatedItem, {
+        headers: { 'X-Admin-Key': adminKey },
+      });
+      setMenuItems((prev) =>
+        prev.map((item) => (item._id === id ? response.data : item))
+      );
+      resetForm();
+    } catch (error) {
+      console.error('Error updating item:', error);
+      alert('Failed to update item. Check admin key or server status.');
+    }
+  };
+
+  const handleDelete = async (e) => {
+    e.preventDefault();
+    if (!id) return alert('Please enter an ID to delete');
+    if (!adminKey) return alert('Please enter the admin key');
+    try {
+      await adminApi.delete(`/menu/${id}`, {
+        headers: { 'X-Admin-Key': adminKey },
+      });
+      setMenuItems((prev) => prev.filter((item) => item._id !== id));
+      resetForm();
+    } catch (error) {
+      console.error('Error deleting item:', error);
+      alert('Failed to delete item. Check admin key or server status.');
+    }
+  };
+
+  const resetForm = () => {
+    setName('');
+    setDescription('');
+    setPrice('');
+    setCategory('');
+    setId('');
+  };
+
+  return (
+    <div className="admin-form">
+      <h2>Manage Menu Items</h2>
+      <form>
+        <input
+          type="password"
+          placeholder="Admin Key"
+          value={adminKey}
+          onChange={(e) => setAdminKey(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
+        <input
+          type="number"
+          placeholder="Price"
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Category"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="ID (for update/delete)"
+          value={id}
+          onChange={(e) => setId(e.target.value)}
+        />
+        <div>
+          <button type="submit" onClick={handleAdd}>Add</button>
+          <button type="submit" onClick={handleUpdate}>Update</button>
+          <button type="submit" onClick={handleDelete}>Delete</button>
+          <button type="button" onClick={closeForm}>Close</button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
+AdminForm.propTypes = {
+  setMenuItems: PropTypes.func.isRequired,
+  closeForm: PropTypes.func.isRequired,
 };
 
 function App() {
   const [menuItems, setMenuItems] = useState([]);
   const [qrCode, setQrCode] = useState('');
   const [loading, setLoading] = useState(true);
+  const [showAdminForm, setShowAdminForm] = useState(false);
+  const [favorites, setFavorites] = useState(loadFavorites); // Moved to App level
 
   useEffect(() => {
     setLoading(true);
-    console.log('Fetching data from backend...'); // Debug start of fetch
+    console.log('Fetching data from backend...');
     Promise.all([
-      axios.get('http://192.168.0.107:5000/api/menu'), // Updated to backend port
-      axios.get('http://192.168.0.107:5000/api/qrcode'), // Updated to backend port
+      axios.get('http://192.168.0.107:5000/api/menu'),
+      axios.get('http://192.168.0.107:5000/api/qrcode'),
     ])
       .then(([menuRes, qrRes]) => {
-        console.log('Menu Data:', menuRes.data); // Debug menu response
-        console.log('QR Code Data:', qrRes.data.qrCode); // Debug QR code response
+        console.log('Menu Data:', menuRes.data);
+        console.log('QR Code Data:', qrRes.data.qrCode);
         setMenuItems(menuRes.data);
         setQrCode(qrRes.data.qrCode);
       })
       .catch((err) => {
-        console.error('Fetch Error:', err); // Log full error details
-        setQrCode(''); // Fallback to empty string on error
+        console.error('Fetch Error:', err);
+        setQrCode('');
       })
       .finally(() => {
-        console.log('Loading complete'); // Debug end of fetch
+        console.log('Loading complete');
         setLoading(false);
       });
+
+    const handleKeyDown = (e) => {
+      if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+        setShowAdminForm((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+  }, [favorites]);
+
+  const toggleFavorite = (itemId) => {
+    setFavorites((prev) =>
+      prev.includes(itemId)
+        ? prev.filter((id) => id !== itemId)
+        : [...prev, itemId]
+    );
+  };
 
   if (loading) {
     return (
@@ -220,10 +421,33 @@ function App() {
   }
 
   return (
-    <Routes>
-      <Route path="/" element={<Home qrCode={qrCode} />} />
-      <Route path="/menu" element={<Menu menuItems={menuItems} setMenuItems={setMenuItems} />} />
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/" element={<Home qrCode={qrCode} />} />
+        <Route
+          path="/menu"
+          element={
+            <Menu
+              menuItems={menuItems}
+              setMenuItems={setMenuItems}
+              favorites={favorites}
+              toggleFavorite={toggleFavorite}
+            />
+          }
+        />
+        <Route
+          path="/favorites"
+          element={
+            <Favorites
+              menuItems={menuItems}
+              favorites={favorites}
+              toggleFavorite={toggleFavorite}
+            />
+          }
+        />
+      </Routes>
+      {showAdminForm && <AdminForm setMenuItems={setMenuItems} closeForm={() => setShowAdminForm(false)} />}
+    </>
   );
 }
 
