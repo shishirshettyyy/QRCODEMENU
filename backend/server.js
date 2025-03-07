@@ -13,7 +13,7 @@ app.use(express.json());
 // Configurable IP and ports
 const BACKEND_PORT = process.env.PORT || 5000;
 const FRONTEND_PORT = 5173;
-const IP = '192.168.0.107';
+const IP = '192.168.0.102';
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -48,7 +48,7 @@ app.get('/api/menu', async (req, res) => {
 
     const menuItems = await MenuItem.find(query);
     console.log('Fetched menu items:', menuItems.length);
-    res.json(menuItems);
+    res.json(menuItems); // Includes image field if present
   } catch (error) {
     console.error('Error fetching menu:', error);
     res.status(500).json({ error: 'Failed to fetch menu' });
@@ -68,19 +68,6 @@ app.post('/api/menu', adminAuth, async (req, res) => {
   }
 });
 
-// Add multiple menu items (bulk)
-app.post('/api/menu/bulk', adminAuth, async (req, res) => {
-  try {
-    const menuItems = req.body;
-    const insertedItems = await MenuItem.insertMany(menuItems);
-    console.log('Bulk inserted items:', insertedItems.length);
-    res.json(insertedItems);
-  } catch (error) {
-    console.error('Bulk Insert Error:', error);
-    res.status(500).json({ error: 'Failed to add items' });
-  }
-});
-
 // Update a menu item
 app.put('/api/menu/:id', adminAuth, async (req, res) => {
   try {
@@ -89,7 +76,7 @@ app.put('/api/menu/:id', adminAuth, async (req, res) => {
     if (!updatedItem) {
       return res.status(404).json({ error: 'Menu item not found' });
     }
-    console.log('Updated menu item:', updatedItem);
+    console.log('Updated menu item with image:', updatedItem); // Updated log
     res.json(updatedItem);
   } catch (error) {
     console.error('Error updating menu item:', error);

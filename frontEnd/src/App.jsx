@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom'; // Added useNavigate
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import { FaHeart } from 'react-icons/fa';
@@ -10,9 +10,8 @@ const loadFavorites = () => {
   return saved ? JSON.parse(saved) : [];
 };
 
-// Admin Axios instance without hardcoded key
 const adminApi = axios.create({
-  baseURL: 'http://192.168.0.107:5000/api',
+  baseURL: 'http://192.168.0.102:5000/api',
 });
 
 function Home({ qrCode }) {
@@ -20,7 +19,7 @@ function Home({ qrCode }) {
   return (
     <div className="app-container">
       <header className="header">
-        <h1>The Gourmet Haven</h1>
+        <h1>Udupi Kitchen</h1>
         <p className="subtitle">Exquisite Dining, Curated for You</p>
       </header>
       <main className="main-content qr-centered">
@@ -35,7 +34,7 @@ function Home({ qrCode }) {
         </div>
       </main>
       <footer className="footer">
-        <p>© 2025 The Gourmet Haven. All rights reserved.</p>
+        <p>© 2025 Udupi Kitchen. All rights reserved.</p>
       </footer>
     </div>
   );
@@ -49,7 +48,7 @@ function Menu({ menuItems, setMenuItems, favorites, toggleFavorite }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [sortOrder, setSortOrder] = useState(null);
-  const navigate = useNavigate(); // For navigation to favorites page
+  const navigate = useNavigate();
 
   const categories = [
     'All',
@@ -70,7 +69,7 @@ function Menu({ menuItems, setMenuItems, favorites, toggleFavorite }) {
         if (searchTerm) params.search = searchTerm;
         if (selectedCategory && selectedCategory !== 'All') params.category = selectedCategory;
 
-        const response = await axios.get('http://192.168.0.107:5000/api/menu', { params });
+        const response = await axios.get('http://192.168.0.102:5000/api/menu', { params });
         let items = response.data;
 
         if (sortOrder) {
@@ -100,13 +99,13 @@ function Menu({ menuItems, setMenuItems, favorites, toggleFavorite }) {
 
   const handleFavoriteClick = (itemId) => {
     toggleFavorite(itemId);
-    navigate('/favorites'); // Navigate to favorites page
+    navigate('/favorites');
   };
 
   return (
     <div className="app-container">
       <header className="header">
-        <h1>Our Culinary Collection</h1>
+        <h1>Udupi Kitchen Menu</h1>
         <p className="subtitle">Savor the Finest Flavors</p>
       </header>
       <section className="search-filter-bar">
@@ -143,6 +142,9 @@ function Menu({ menuItems, setMenuItems, favorites, toggleFavorite }) {
           {Array.isArray(menuItems) && menuItems.length > 0 ? (
             menuItems.map((item) => (
               <article key={item._id} className="menu-item">
+                {item.image && (
+                  <img src={item.image} alt={item.name} className="menu-item-image" />
+                )}
                 <div className="item-header">
                   <h3 className="item-title">{item.name}</h3>
                   <button
@@ -162,7 +164,7 @@ function Menu({ menuItems, setMenuItems, favorites, toggleFavorite }) {
         </div>
       </main>
       <footer className="footer">
-        <p>© 2025 The Gourmet Haven. All rights reserved.</p>
+        <p>© 2025 Udupi Kitchen. All rights reserved.</p>
       </footer>
     </div>
   );
@@ -175,6 +177,7 @@ Menu.propTypes = {
       name: PropTypes.string.isRequired,
       description: PropTypes.string.isRequired,
       price: PropTypes.number.isRequired,
+      image: PropTypes.string,
     })
   ).isRequired,
   setMenuItems: PropTypes.func.isRequired,
@@ -190,7 +193,7 @@ function Favorites({ menuItems, favorites, toggleFavorite }) {
   return (
     <div className="app-container">
       <header className="header">
-        <h1>Your Favorites</h1>
+        <h1>Udupi Kitchen Favorites</h1>
         <p className="subtitle">Your Selected Delights</p>
       </header>
       <main className="main-content">
@@ -199,6 +202,9 @@ function Favorites({ menuItems, favorites, toggleFavorite }) {
             <ul>
               {favoriteItems.map((item) => (
                 <li key={item._id} className="favorite-item">
+                  {item.image && (
+                    <img src={item.image} alt={item.name} className="favorite-item-image" />
+                  )}
                   <span>{item.name}</span>
                   <span>₹{item.price.toFixed(2)}</span>
                   <button
@@ -219,7 +225,7 @@ function Favorites({ menuItems, favorites, toggleFavorite }) {
         </div>
       </main>
       <footer className="footer">
-        <p>© 2025 The Gourmet Haven. All rights reserved.</p>
+        <p>© 2025 Udupi Kitchen. All rights reserved.</p>
       </footer>
     </div>
   );
@@ -232,6 +238,7 @@ Favorites.propTypes = {
       name: PropTypes.string.isRequired,
       description: PropTypes.string.isRequired,
       price: PropTypes.number.isRequired,
+      image: PropTypes.string,
     })
   ).isRequired,
   favorites: PropTypes.arrayOf(PropTypes.string).isRequired,
@@ -245,12 +252,33 @@ function AdminForm({ setMenuItems, closeForm }) {
   const [category, setCategory] = useState('');
   const [id, setId] = useState('');
   const [adminKey, setAdminKey] = useState('');
+  const [image, setImage] = useState('');
+
+  // Optional: Fetch item details when ID is entered to pre-fill fields
+  useEffect(() => {
+    if (id) {
+      const fetchItem = async () => {
+        try {
+          const response = await adminApi.get(`/menu/${id}`);
+          const item = response.data;
+          setName(item.name || '');
+          setDescription(item.description || '');
+          setPrice(item.price ? item.price.toString() : '');
+          setCategory(item.category || '');
+          setImage(item.image || '');
+        } catch (error) {
+          console.error('Error fetching item:', error);
+        }
+      };
+      fetchItem();
+    }
+  }, [id]);
 
   const handleAdd = async (e) => {
     e.preventDefault();
     if (!adminKey) return alert('Please enter the admin key');
     try {
-      const newItem = { name, description, price: parseFloat(price), category };
+      const newItem = { name, description, price: parseFloat(price), category, image };
       const response = await adminApi.post('/menu', newItem, {
         headers: { 'X-Admin-Key': adminKey },
       });
@@ -267,7 +295,13 @@ function AdminForm({ setMenuItems, closeForm }) {
     if (!id) return alert('Please enter an ID to update');
     if (!adminKey) return alert('Please enter the admin key');
     try {
-      const updatedItem = { name, description, price: parseFloat(price), category };
+      const updatedItem = { 
+        name: name || undefined, 
+        description: description || undefined, 
+        price: price ? parseFloat(price) : undefined, 
+        category: category || undefined, 
+        image: image || undefined 
+      };
       const response = await adminApi.put(`/menu/${id}`, updatedItem, {
         headers: { 'X-Admin-Key': adminKey },
       });
@@ -275,6 +309,7 @@ function AdminForm({ setMenuItems, closeForm }) {
         prev.map((item) => (item._id === id ? response.data : item))
       );
       resetForm();
+      alert('Item updated successfully!');
     } catch (error) {
       console.error('Error updating item:', error);
       alert('Failed to update item. Check admin key or server status.');
@@ -303,6 +338,7 @@ function AdminForm({ setMenuItems, closeForm }) {
     setPrice('');
     setCategory('');
     setId('');
+    setImage('');
   };
 
   return (
@@ -317,31 +353,37 @@ function AdminForm({ setMenuItems, closeForm }) {
         />
         <input
           type="text"
-          placeholder="Name"
+          placeholder="Name (optional for update)"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
         <input
           type="text"
-          placeholder="Description"
+          placeholder="Description (optional for update)"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
         <input
           type="number"
-          placeholder="Price"
+          placeholder="Price (optional for update)"
           value={price}
           onChange={(e) => setPrice(e.target.value)}
         />
         <input
           type="text"
-          placeholder="Category"
+          placeholder="Category (optional for update)"
           value={category}
           onChange={(e) => setCategory(e.target.value)}
         />
         <input
           type="text"
-          placeholder="ID (for update/delete)"
+          placeholder="Image URL (optional)"
+          value={image}
+          onChange={(e) => setImage(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="ID (required for update/delete)"
           value={id}
           onChange={(e) => setId(e.target.value)}
         />
@@ -366,14 +408,14 @@ function App() {
   const [qrCode, setQrCode] = useState('');
   const [loading, setLoading] = useState(true);
   const [showAdminForm, setShowAdminForm] = useState(false);
-  const [favorites, setFavorites] = useState(loadFavorites); // Moved to App level
+  const [favorites, setFavorites] = useState(loadFavorites);
 
   useEffect(() => {
     setLoading(true);
     console.log('Fetching data from backend...');
     Promise.all([
-      axios.get('http://192.168.0.107:5000/api/menu'),
-      axios.get('http://192.168.0.107:5000/api/qrcode'),
+      axios.get('http://192.168.0.102:5000/api/menu'),
+      axios.get('http://192.168.0.102:5000/api/qrcode'),
     ])
       .then(([menuRes, qrRes]) => {
         console.log('Menu Data:', menuRes.data);

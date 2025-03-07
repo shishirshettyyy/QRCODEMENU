@@ -610,4 +610,74 @@ body {
     width: 100%;
   }
 }
+/* Add these styles to your existing App.css */
+
+/* ==========================================================================
+   Menu Item Image
+   ========================================================================== */
+   .menu-item-image {
+    width: 100%;
+    height: 12.5rem; /* 200px */
+    object-fit: cover;
+    border-radius: var(--border-radius-md);
+    margin-bottom: var(--spacing-md);
+    transition: transform 0.3s ease;
+  }
+  
+  .menu-item:hover .menu-item-image {
+    transform: scale(1.05);
+  }
+  
+  /* ==========================================================================
+     Favorite Item Image
+     ========================================================================== */
+  .favorite-item-image {
+    width: 5rem; /* 80px */
+    height: 5rem;
+    object-fit: cover;
+    border-radius: var(--border-radius-sm);
+    margin-right: var(--spacing-md);
+  }
+  
+  /* Adjust favorite-item layout */
+  .favorite-item {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-sm) 0;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .favorite-item span:first-child {
+    flex: 1;
+    font-size: 1.125rem;
+    font-family: var(--font-secondary);
+    color: var(--color-text);
+  }
+  
+  .favorite-item span:nth-child(2) {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--color-success);
+    margin-right: var(--spacing-md);
+  }
+  
+  /* Responsive Adjustments */
+  @media (max-width: 48rem) {
+    .menu-item-image {
+      height: 10rem; /* 160px */
+    }
+  
+    .favorite-item {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--spacing-sm);
+    }
+  
+    .favorite-item-image {
+      width: 100%;
+      height: 8rem; /* 128px */
+      margin-right: 0;
+      margin-bottom: var(--spacing-sm);
+    }
+  }
 }
