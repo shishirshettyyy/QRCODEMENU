@@ -55,7 +55,12 @@ Tech Stack
 
 Contributing
 
-Got ideas to make it better? Fork it and send a pull request! See CONTRIBUTING.md for guidelines.
+Want to make it better? Contributions are welcome!
+
+    Fork the repo and submit a pull request with your changes.
+    For guidelines, check the repository or reach out directly.
+    (Note: A CONTRIBUTING.md file will be added soon—stay tuned!)
+
 License
 
 Licensed under the MIT License — free to use and modify.
